@@ -28,9 +28,9 @@ typedef struct {
 // Declarations
 
 ProgData* InitProg(unsigned int numOfInsts);
-void CheckDep(ProgData *data, InstInfo progTrace[], int cmd_num, int dep_num,
-	unsigned int opsLatency[]);
-unsigned int findProgDepth(ProgData *data, unsigned int opsLatency[], InstInfo progTrace[]);
+void CheckDep(ProgData *data,const unsigned int opsLatency[], InstInfo progTrace[],
+	int cmd_num, int dep_num);
+unsigned int findProgDepth(ProgData *data,const unsigned int opsLatency[], InstInfo progTrace[]);
 
 
 int max(int a, int b) {
@@ -64,8 +64,8 @@ ProgData* InitProg(unsigned int numOfInsts) {
 	return data;
 }
 
-void CheckDep(ProgData *data, InstInfo progTrace[], int cmd_num, int dep_num,
-	unsigned int opsLatency[]) {
+void CheckDep(ProgData *data, const unsigned int opsLatency[], InstInfo progTrace[],
+	int cmd_num, int dep_num) {
 
 	bool is_updated = false;
 	InstInfo cmd = progTrace[cmd_num];
@@ -81,8 +81,8 @@ void CheckDep(ProgData *data, InstInfo progTrace[], int cmd_num, int dep_num,
 	}
 	// Update dep2  (Src2)
 	if (cmd.src2Idx != NOT_USED && cmd.src2Idx == dep_cmd.dstIdx) {
-		if (data->inst_array[cmd_num].dep1 < dep_num)
-			data->inst_array[cmd_num].dep1 = dep_num;
+		if (data->inst_array[cmd_num].dep2 < dep_num)
+			data->inst_array[cmd_num].dep2 = dep_num;
 		is_updated = true;
 	}
 	if (is_updated)
@@ -100,12 +100,13 @@ updated:
 		max(dep_depth + opsLatency[dep_cmd.opcode], cmd_depth);
 }
 
-unsigned int findProgDepth(ProgData *data, unsigned int opsLatency[], InstInfo progTrace[]) {
+unsigned int findProgDepth(ProgData *data, const unsigned int opsLatency[], InstInfo progTrace[]) {
 	unsigned int overall_depth = 0;
 	for (int i = 0; i < data->arr_len; i++) {
-		if (data->inst_array[i].is_last_dep == true){
+		if (data->inst_array[i].is_last_dep == true) {
 			overall_depth = max(overall_depth,
 				data->inst_array[i].depth + opsLatency[progTrace[i].opcode]);
+		}
 	}
 	return overall_depth;
 }
@@ -118,33 +119,29 @@ ProgCtx analyzeProg(const unsigned int opsLatency[],  InstInfo progTrace[], unsi
 		return PROG_CTX_NULL;
 
 	// The Fun Stuff
-/*
- *CheckDep(ProgData *data, InstInfo progTrace[], int cmd_num, int dep_num,
- *                unsigned int opsLatency[])
- */
 	// We start from 1 because cmd no.0 has no dependencies, with a depth of 0.
 	for (int i = 1; i < numOfInsts; i++) {
-		CheckDep(data, progTrace, i, i-1);
-		if (i != 1)
-			CheckDep(data, progTrace, i, i-2);
+		CheckDep(data, opsLatency, progTrace, i, i-1);
+		if (i != 1) {
+			CheckDep(data, opsLatency, progTrace, i, i-2);
 		}
 	}
 
-	data->overall_depth = findProgDepth(data, opsLatency);
+	data->overall_depth = findProgDepth(data, opsLatency, progTrace);
 
-	return (ProgCtx)data;
+	return data;
 }
 
 void freeProgCtx(ProgCtx ctx) {
 	if (ctx) {
-		ProgData *data = (ProgData)ctx;
+		ProgData *data = (ProgData *)ctx;
 		free(data->inst_array);
 		free(data);
 	}
 }
 
 int getInstDepth(ProgCtx ctx, unsigned int theInst) {
-	ProgData *data = (progData*)ctx;
+	ProgData *data = (ProgData *)ctx;
 	if (theInst >= data->arr_len)
 		return -1;
 	return data->inst_array[theInst].depth;
