@@ -70,20 +70,25 @@ void CheckDep(ProgData *data, const unsigned int opsLatency[], InstInfo progTrac
 	bool is_updated = false;
 	InstInfo cmd = progTrace[cmd_num];
 	InstInfo dep_cmd = progTrace[dep_num];
-	int dep_depth;
-	int cmd_depth;
+	int cmd_depth = data->inst_array[dep_num].depth;
+	int dep_depth = data->inst_array[cmd_num].depth;
 
-	// Update dep1  (Src1)
-	if (cmd.src1Idx != NOT_USED && cmd.src1Idx == dep_cmd.dstIdx) {
-		if (data->inst_array[cmd_num].dep1 < dep_num)
+
+	// No point in checking if it wouldn't matter.
+	if (cmd_depth < (dep_depth + opsLatency[dep_cmd.opcode])) { 
+		// No need to check "-1", since Src(1/2) always have value >= 0, so cond would never 
+		// happen anyway.
+
+		// Update dep1  (Src1)
+		if (cmd.src1Idx == dep_cmd.dstIdx) {
 			data->inst_array[cmd_num].dep1 = dep_num;
-		is_updated = true;
-	}
-	// Update dep2  (Src2)
-	if (cmd.src2Idx != NOT_USED && cmd.src2Idx == dep_cmd.dstIdx) {
-		if (data->inst_array[cmd_num].dep2 < dep_num)
+			is_updated = true;
+		}
+		// Update dep2  (Src2)
+		if (cmd.src2Idx == dep_cmd.dstIdx) {
 			data->inst_array[cmd_num].dep2 = dep_num;
-		is_updated = true;
+			is_updated = true;
+		}
 	}
 	if (is_updated)
 		goto updated;
@@ -94,10 +99,7 @@ updated:
 	data->inst_array[dep_num].is_last_dep = false;
 	
 	// Update depth
-	dep_depth = data->inst_array[dep_num].depth;
-	cmd_depth = data->inst_array[cmd_num].depth;
-	data->inst_array[cmd_num].depth = 
-		max(dep_depth + opsLatency[dep_cmd.opcode], cmd_depth);
+	data->inst_array[cmd_num].depth = dep_depth + opsLatency[dep_cmd.opcode];
 }
 
 unsigned int findProgDepth(ProgData *data, const unsigned int opsLatency[], InstInfo progTrace[]) {
@@ -119,11 +121,11 @@ ProgCtx analyzeProg(const unsigned int opsLatency[],  InstInfo progTrace[], unsi
 		return PROG_CTX_NULL;
 
 	// The Fun Stuff
-	// We start from 1 because cmd no.0 has no dependencies, with a depth of 0.
+	// Doing it like this gives us O(n^2). Maybe there is a better way,
+	// but who honestly cares...
 	for (int i = 1; i < numOfInsts; i++) {
-		CheckDep(data, opsLatency, progTrace, i, i-1);
-		if (i != 1) {
-			CheckDep(data, opsLatency, progTrace, i, i-2);
+		for (int j = 0; j < i; j++) {
+			CheckDep(data, opsLatency, progTrace, i, j);
 		}
 	}
 
