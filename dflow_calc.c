@@ -9,8 +9,6 @@
 // Defines
 
 #define NO_DEP -1
-#define NOT_USED -1
-#define DEBUG( ... ); //printf( __VA_ARGS__ );
 
 // Structs
 
@@ -133,16 +131,6 @@ ProgCtx analyzeProg(const unsigned int opsLatency[],  InstInfo progTrace[], unsi
 
 	data->overall_depth = findProgDepth(data, opsLatency, progTrace);
 
-	DEBUG("\nProg Dump:\n");
-	for (int i = 0; i < numOfInsts; i++) {
-		DEBUG("*** Command %d : %d %d %d %d\n", i, progTrace[i].opcode, progTrace[i].dstIdx,
-			progTrace[i].src1Idx, progTrace[i].src2Idx);
-		DEBUG("Is Last Dep : %s\n", (data->inst_array[i].is_last_dep) ? "True" : "False");
-		DEBUG("Dep1 : %d\n", data->inst_array[i].dep1);
-		DEBUG("Dep2 : %d\n", data->inst_array[i].dep2);
-		DEBUG("Depth : %d\n", data->inst_array[i].depth);
-	}
-
 	return data;
 }
 
@@ -174,5 +162,3 @@ int getProgDepth(ProgCtx ctx) {
 	ProgData *data = (ProgData*)ctx;
 	return data->overall_depth;
 }
-
-

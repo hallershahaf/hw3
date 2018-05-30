@@ -1,0 +1,89 @@
+==3540== Memcheck, a memory error detector
+==3540== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
+==3540== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
+==3540== Command: ./dflow_calc rand_tests/rand_opcode3.dat rand_tests/rand_example3.in p0 d0 p1 d1 p2 d2 p3 d3 p4 d4 p5 d5 p6 d6 p7 d7 p8 d8 p9 d9 p10 d10 p11 d11 p12 d12 p13 d13
+==3540== Parent PID: 3424
+==3540== 
+--3540-- 
+--3540-- Valgrind options:
+--3540--    --leak-check=full
+--3540--    --log-file=memoryleaks.out
+--3540--    -v
+--3540-- Contents of /proc/version:
+--3540--   Linux version 4.4.0-121-generic (buildd@lcy01-amd64-004) (gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.9) ) #145-Ubuntu SMP Fri Apr 13 13:47:23 UTC 2018
+--3540-- 
+--3540-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-avx-avx2
+--3540-- Page sizes: currently 4096, max supported 4096
+--3540-- Valgrind library directory: /usr/lib/valgrind
+--3540-- Reading syms from /media/sf_Shared/hw3/dflow_calc
+--3540-- Reading syms from /lib/x86_64-linux-gnu/ld-2.23.so
+--3540--   Considering /lib/x86_64-linux-gnu/ld-2.23.so ..
+--3540--   .. CRC mismatch (computed aa979a42 wanted 9019bbb7)
+--3540--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/ld-2.23.so ..
+--3540--   .. CRC is valid
+--3540-- Reading syms from /usr/lib/valgrind/memcheck-amd64-linux
+--3540--   Considering /usr/lib/valgrind/memcheck-amd64-linux ..
+--3540--   .. CRC mismatch (computed eea41ea9 wanted 2009db78)
+--3540--    object doesn't have a symbol table
+--3540--    object doesn't have a dynamic symbol table
+--3540-- Scheduler: using generic scheduler lock implementation.
+--3540-- Reading suppressions file: /usr/lib/valgrind/default.supp
+==3540== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-3540-by-compm-on-???
+==3540== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-3540-by-compm-on-???
+==3540== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-3540-by-compm-on-???
+==3540== 
+==3540== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==3540== don't want to do, unless you know exactly what you're doing,
+==3540== or are doing some strange experiment):
+==3540==   /usr/lib/valgrind/../../bin/vgdb --pid=3540 ...command...
+==3540== 
+==3540== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==3540==   /path/to/gdb ./dflow_calc
+==3540== and then give GDB the following command
+==3540==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=3540
+==3540== --pid is optional if only one valgrind process is running
+==3540== 
+--3540-- REDIR: 0x401cfd0 (ld-linux-x86-64.so.2:strlen) redirected to 0x3809e181 (???)
+--3540-- Reading syms from /usr/lib/valgrind/vgpreload_core-amd64-linux.so
+--3540--   Considering /usr/lib/valgrind/vgpreload_core-amd64-linux.so ..
+--3540--   .. CRC mismatch (computed 2567ccf6 wanted 49420590)
+--3540--    object doesn't have a symbol table
+--3540-- Reading syms from /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so
+--3540--   Considering /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so ..
+--3540--   .. CRC mismatch (computed 0e27c9a8 wanted ac585421)
+--3540--    object doesn't have a symbol table
+==3540== WARNING: new redirection conflicts with existing -- ignoring it
+--3540--     old: 0x0401cfd0 (strlen              ) R-> (0000.0) 0x3809e181 ???
+--3540--     new: 0x0401cfd0 (strlen              ) R-> (2007.0) 0x04c31020 strlen
+--3540-- REDIR: 0x401b920 (ld-linux-x86-64.so.2:index) redirected to 0x4c30bc0 (index)
+--3540-- REDIR: 0x401bb40 (ld-linux-x86-64.so.2:strcmp) redirected to 0x4c320d0 (strcmp)
+--3540-- REDIR: 0x401dd30 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x4c35270 (mempcpy)
+--3540-- Reading syms from /lib/x86_64-linux-gnu/libc-2.23.so
+--3540--   Considering /lib/x86_64-linux-gnu/libc-2.23.so ..
+--3540--   .. CRC mismatch (computed 7a8ee3e4 wanted a5190ac4)
+--3540--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/libc-2.23.so ..
+--3540--   .. CRC is valid
+--3540-- REDIR: 0x4ec9a00 (libc.so.6:strcasecmp) redirected to 0x4a286f0 (_vgnU_ifunc_wrapper)
+--3540-- REDIR: 0x4ec5280 (libc.so.6:strcspn) redirected to 0x4a286f0 (_vgnU_ifunc_wrapper)
+--3540-- REDIR: 0x4ecbcf0 (libc.so.6:strncasecmp) redirected to 0x4a286f0 (_vgnU_ifunc_wrapper)
+--3540-- REDIR: 0x4ec76f0 (libc.so.6:strpbrk) redirected to 0x4a286f0 (_vgnU_ifunc_wrapper)
+--3540-- REDIR: 0x4ec7a80 (libc.so.6:strspn) redirected to 0x4a286f0 (_vgnU_ifunc_wrapper)
+--3540-- REDIR: 0x4ec914b (libc.so.6:memcpy@GLIBC_2.2.5) redirected to 0x4a286f0 (_vgnU_ifunc_wrapper)
+--3540-- REDIR: 0x4ec7400 (libc.so.6:rindex) redirected to 0x4c308a0 (rindex)
+--3540-- REDIR: 0x4ed0760 (libc.so.6:strchrnul) redirected to 0x4c34da0 (strchrnul)
+--3540-- REDIR: 0x4ebe130 (libc.so.6:malloc) redirected to 0x4c2db20 (malloc)
+--3540-- REDIR: 0x4ec93b0 (libc.so.6:__GI_mempcpy) redirected to 0x4c34fa0 (__GI_mempcpy)
+--3540-- REDIR: 0x4ec8060 (libc.so.6:__GI_strstr) redirected to 0x4c354d0 (__strstr_sse2)
+--3540-- REDIR: 0x4ec8860 (libc.so.6:memchr) redirected to 0x4c32170 (memchr)
+--3540-- REDIR: 0x4ece470 (libc.so.6:__GI_memcpy) redirected to 0x4c32b00 (__GI_memcpy)
+--3540-- REDIR: 0x4ebe4f0 (libc.so.6:free) redirected to 0x4c2ed80 (free)
+--3540-- REDIR: 0x4ebe6c0 (libc.so.6:realloc) redirected to 0x4c2fce0 (realloc)
+==3540== 
+==3540== HEAP SUMMARY:
+==3540==     in use at exit: 0 bytes in 0 blocks
+==3540==   total heap usage: 8 allocs, 8 frees, 14,672 bytes allocated
+==3540== 
+==3540== All heap blocks were freed -- no leaks are possible
+==3540== 
+==3540== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==3540== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
