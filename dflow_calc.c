@@ -4,11 +4,13 @@
 #include "dflow_calc.h"
 #include <stdbool.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 // Defines
 
 #define NO_DEP -1
 #define NOT_USED -1
+#define DEBUG( ... ); //printf( __VA_ARGS__ );
 
 // Structs
 
@@ -70,8 +72,8 @@ void CheckDep(ProgData *data, const unsigned int opsLatency[], InstInfo progTrac
 	bool is_updated = false;
 	InstInfo cmd = progTrace[cmd_num];
 	InstInfo dep_cmd = progTrace[dep_num];
-	int cmd_depth = data->inst_array[dep_num].depth;
-	int dep_depth = data->inst_array[cmd_num].depth;
+	int cmd_depth = data->inst_array[cmd_num].depth;
+	int dep_depth = data->inst_array[dep_num].depth;
 
 
 	// No point in checking if it wouldn't matter.
@@ -131,6 +133,16 @@ ProgCtx analyzeProg(const unsigned int opsLatency[],  InstInfo progTrace[], unsi
 
 	data->overall_depth = findProgDepth(data, opsLatency, progTrace);
 
+	DEBUG("\nProg Dump:\n");
+	for (int i = 0; i < numOfInsts; i++) {
+		DEBUG("*** Command %d : %d %d %d %d\n", i, progTrace[i].opcode, progTrace[i].dstIdx,
+			progTrace[i].src1Idx, progTrace[i].src2Idx);
+		DEBUG("Is Last Dep : %s\n", (data->inst_array[i].is_last_dep) ? "True" : "False");
+		DEBUG("Dep1 : %d\n", data->inst_array[i].dep1);
+		DEBUG("Dep2 : %d\n", data->inst_array[i].dep2);
+		DEBUG("Depth : %d\n", data->inst_array[i].depth);
+	}
+
 	return data;
 }
 
@@ -150,10 +162,12 @@ int getInstDepth(ProgCtx ctx, unsigned int theInst) {
 }
 
 int getInstDeps(ProgCtx ctx, unsigned int theInst, int *src1DepInst, int *src2DepInst) {
-	ProgData *data = (ProgData*)ctx;
+	ProgData *data = (ProgData *)ctx;
+	if (theInst >= data->arr_len)
+		return -1;
 	*src1DepInst = data->inst_array[theInst].dep1;
 	*src2DepInst = data->inst_array[theInst].dep2;
-    return -1;
+    return 0;
 }
 
 int getProgDepth(ProgCtx ctx) {
